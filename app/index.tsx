@@ -21,9 +21,11 @@ export default function Index() {
   const [json, setJson] = useState<any>(null);
 
   useEffect(() => {
-    Promise.all([loadAudio(MOCK_AUDIO_URL), loadCaptionsJSON(MOCK_JSON_URL)]).then(([_, json]) => {
+    Promise.all([loadAudio(MOCK_AUDIO_URL), loadCaptionsJSON(MOCK_JSON_URL)]).then(([status, json]) => {
       setJson(json);
-      setReady(true);
+      if (status.isLoaded && status.durationMillis) {
+        setReady(true);
+      }
     });
     return () => {
       PLAYER.unloadAsync();
