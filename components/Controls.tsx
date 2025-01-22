@@ -22,7 +22,7 @@ export default function Controls({
   onNext,
   onPrev,
 }: Props) {
-  const trackerPercent = `${(time / total) * 100}%` as const;
+  const trackerPercent = `${Math.floor((time / total) * 100)}%` as const;
   function formatTime(time: number) {
     let seconds = Math.floor(time / 1000);
     const hours = parseInt((seconds / 3600).toString());
@@ -33,24 +33,33 @@ export default function Controls({
       .toString()
       .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   }
+
   return (
-    <View style={{ backgroundColor: "red" }}>
-      <View style={styles.timeline}>
-        <View style={{ flexBasis: 5, flexDirection: "row" }}>
+    <View style={{ backgroundColor: "#eee", paddingBottom: 30 }}>
+      <View style={{ minHeight: 50 }}>
+        <View style={{ height: 5, flexDirection: "row" }}>
           <View
-            style={{ flexBasis: trackerPercent, backgroundColor: "yellow" }}
+            style={{ width: trackerPercent, backgroundColor: "orange" }}
           ></View>
           <View
             style={{
               width: 20,
               height: 20,
               borderRadius: 10,
-              backgroundColor: "yellow",
+              backgroundColor: "orange",
               alignSelf: "center",
             }}
           ></View>
         </View>
-        <View style={styles.times}>
+        <View
+          style={{
+            justifyContent: "space-between",
+            flexDirection: "row",
+            flex: 1,
+            paddingHorizontal: 24,
+            marginTop: 24,
+          }}
+        >
           <Text>{formatTime(time)}</Text>
           <Text>{formatTime(total)}</Text>
         </View>
@@ -59,45 +68,33 @@ export default function Controls({
         style={{
           flexDirection: "row",
           justifyContent: "center",
-          gap: "24px",
-          paddingBottom: 24,
+          gap: 20,
         }}
       >
-        <AntDesign
-          onPress={onPrev}
-          name="stepbackward"
-          size={24}
-          color="black"
-        />
-        <AntDesign
+        <View>
+          <AntDesign.Button
+            onPress={onPrev}
+            name="stepbackward"
+            color="black"
+            backgroundColor='transparent'
+          />
+        </View>
+        <AntDesign.Button
           onPress={playing ? onPause : onPlay}
-          name={playing ? "pause" : "caretright"}
-          size={24}
+          name={playing ? "pausecircle" : "play"}
           color="black"
+          backgroundColor="transparent"
+          style={{ paddingHorizontal: 5 }}
         />
-        <AntDesign
-          onPress={onNext}
-          name="stepforward"
-          size={24}
-          color="black"
-        />
+        <View>
+          <AntDesign.Button
+            onPress={onNext}
+            name="stepforward"
+            color="black"
+            backgroundColor='transparent'
+          />
+        </View>
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  timeline: {
-    flex: 1,
-  },
-  handler: {
-    height: 5,
-    backgroundColor: "red",
-  },
-  times: {
-    justifyContent: "space-between",
-    flexDirection: "row",
-    paddingInline: 24,
-    marginTop: 24,
-  },
-});

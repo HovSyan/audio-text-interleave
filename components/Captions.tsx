@@ -12,11 +12,12 @@ function Captions({ list, activeIndex }: Props) {
   return (
     <ScrollView
       style={{
-        backgroundColor: "green",
+        backgroundColor: "#bbb",
         flex: 1,
-        alignSelf: "center",
-        padding: 24,
-        gap: 24
+        padding: 10,
+      }}
+      contentContainerStyle={{
+        rowGap: 24,
       }}
     >
       {list.map((c, i) => (
@@ -35,4 +36,4 @@ function Captions({ list, activeIndex }: Props) {
   );
 }
 
-export default memo(Captions)
+export default memo(Captions);

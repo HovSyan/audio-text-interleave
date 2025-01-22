@@ -42,7 +42,7 @@ export default function Player({ player, json }: Props) {
     total.current = (status as AVPlaybackStatusSuccess).durationMillis!;
     setTime((status as AVPlaybackStatusSuccess).positionMillis);
     if ((status as AVPlaybackStatusSuccess).didJustFinish) {
-      setTime(0);
+      player.setPositionAsync(0);
       setPlaying(false);
     }
   }, []);
@@ -80,13 +80,13 @@ export default function Player({ player, json }: Props) {
   };
   const onNext = () => {
     if (highlightedRef.current === null) return;
-    if (highlightedRef.current >= list.length) return;
+    if (highlightedRef.current >= list.length - 1) return;
 
     player.setPositionAsync(list[highlightedRef.current + 1].from);
   };
 
   return (
-    <View style={{ alignSelf: "stretch", flex: 1 }}>
+    <View style={{ alignSelf: "stretch", flex: 1, backgroundColor: '#eee' }}>
       <Captions list={list} activeIndex={highlightedRef.current} />
       <Controls
         time={time}
