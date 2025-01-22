@@ -1,10 +1,10 @@
 import React, { memo } from "react";
 import { ScrollView, Text, View } from "react-native";
-import { CaptionsList } from "./Player";
+import { ParsedCaptionsList } from "./Player";
 import CaptionItem from "./CaptionItem";
 
 type Props = {
-  list: CaptionsList;
+  list: ParsedCaptionsList;
   activeIndex: number | null;
 };
 

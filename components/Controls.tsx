@@ -1,6 +1,7 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { formatTime } from "@/utils/format-time";
 
 type Props = {
   time: number;
@@ -23,16 +24,6 @@ export default function Controls({
   onPrev,
 }: Props) {
   const trackerPercent = `${Math.floor((time / total) * 100)}%` as const;
-  function formatTime(time: number) {
-    let seconds = Math.floor(time / 1000);
-    const hours = parseInt((seconds / 3600).toString());
-    seconds = seconds % 3600;
-    const minutes = parseInt((seconds / 60).toString());
-    seconds = seconds % 60;
-    return `${hours ? hours.toString().padStart(2, "0") + ":" : ""}${minutes
-      .toString()
-      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-  }
 
   return (
     <View style={{ backgroundColor: "#ddd", paddingBottom: 30 }}>

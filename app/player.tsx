@@ -14,6 +14,11 @@ const PLAYER = new Audio.Sound();
 
 function loadAudio(uri: string) {
   return new Promise((res) => {
+    /**
+     * It seems Audio.Sound has some issues regarding completely loading the media file.
+     * There were cases that the video was not loaded, but the promise was resolved.
+     * This recursion ensures that we have a valid video
+     */
     let checkCount = 0;
     const checkIfLoaded = async () => {
       const status = await PLAYER.getStatusAsync()
