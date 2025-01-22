@@ -3,7 +3,6 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 import { Text, View } from "react-native";
@@ -33,23 +32,30 @@ export type SpeakingCaption = {
 };
 
 export default function Player({ player, json }: Props) {
+  const [total, setTotal] = useState(0);
   const [time, setTime] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const highlightedRef = useRef<number | null>(null);
+  const [highlighted, setHighlighted] = useState<number | null>(null);
 
-  const total = useRef(0);
   const onPlaybackStatusUpdate = useCallback((status: AVPlaybackStatus) => {
-    total.current = (status as AVPlaybackStatusSuccess).durationMillis!;
-    setTime((status as AVPlaybackStatusSuccess).positionMillis);
-    if ((status as AVPlaybackStatusSuccess).didJustFinish) {
+    const { durationMillis, positionMillis, didJustFinish } = status as AVPlaybackStatusSuccess;
+    const total = durationMillis || 0;
+    const time = positionMillis || 0;
+    setTotal(total);
+    setTime(time);
+    if (didJustFinish) {
       player.setPositionAsync(0);
       setPlaying(false);
+    }
+    if (highlighted === null || (list[highlighted].from <= time && time <= list[highlighted].to)) {
+      const index = list.findIndex((c) => c.from <= time && time < c.to);
+      setHighlighted(index === -1 ? null : index);
     }
   }, []);
   const list = useMemo(() => parseCaptionsJSON(json), [json]);
 
   useEffect(() => {
-    player.getStatusAsync().then(onPlaybackStatusUpdate);
+    player.getStatusAsync().then(onPlaybackStatusUpdate)
     player.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
   }, []);
 
@@ -57,40 +63,29 @@ export default function Player({ player, json }: Props) {
     playing ? player.playAsync() : player.pauseAsync();
   }, [playing]);
 
-  if (
-    highlightedRef.current === null ||
-    !(
-      list[highlightedRef.current].from <= time &&
-      time <= list[highlightedRef.current].to
-    )
-  ) {
-    const index = list.findIndex((c) => c.from <= time && time < c.to);
-    highlightedRef.current = index === -1 ? null : index;
-  }
-
   const onPrev = () => {
-    if (highlightedRef.current === null) return;
-    if (highlightedRef.current === 0 && list[highlightedRef.current].from === time) return;
+    if (highlighted === null) return;
+    if (highlighted === 0 && list[highlighted].from === time) return;
 
     player.setPositionAsync(
-      list[highlightedRef.current].from === time
-        ? list[highlightedRef.current - 1].from
-        : list[highlightedRef.current].from
+      list[highlighted].from === time
+        ? list[highlighted - 1].from
+        : list[highlighted].from
     );
   };
   const onNext = () => {
-    if (highlightedRef.current === null) return;
-    if (highlightedRef.current >= list.length - 1) return;
+    if (highlighted === null) return;
+    if (highlighted >= list.length - 1) return;
 
-    player.setPositionAsync(list[highlightedRef.current + 1].from);
+    player.setPositionAsync(list[highlighted + 1].from);
   };
 
   return (
-    <View style={{ alignSelf: "stretch", flex: 1, backgroundColor: '#eee' }}>
-      <Captions list={list} activeIndex={highlightedRef.current} />
+    <View style={{ alignSelf: "stretch", flex: 1, backgroundColor: '#ddd' }}>
+      <Captions list={list} activeIndex={highlighted} />
       <Controls
         time={time}
-        total={total.current}
+        total={total}
         playing={playing}
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}

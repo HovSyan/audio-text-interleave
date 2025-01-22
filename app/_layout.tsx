@@ -6,9 +6,16 @@ export default function RootLayout() {
       <Stack.Screen
         name="index"
         options={{
+          headerTitle: 'Back',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="player"
+        options={{
           headerTitle: "",
           headerStyle: {
-            backgroundColor: "#eee",
+            backgroundColor: "#ddd",
           },
           headerLargeTitleShadowVisible: true,
         }}

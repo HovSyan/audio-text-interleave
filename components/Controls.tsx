@@ -35,7 +35,7 @@ export default function Controls({
   }
 
   return (
-    <View style={{ backgroundColor: "#eee", paddingBottom: 30 }}>
+    <View style={{ backgroundColor: "#ddd", paddingBottom: 30 }}>
       <View style={{ minHeight: 50 }}>
         <View style={{ height: 5, flexDirection: "row" }}>
           <View
