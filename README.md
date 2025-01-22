@@ -8,4 +8,4 @@ Use `npm start` to run web locally and open your browser at https://localhost:80
 
 # For Live Demo
 
-For Live demo visit https://audio-text-interleave--q6xnremavh.expo.app/
+For Live demo visit https://audio-text-interleave--svgonqg2i2.expo.app/
