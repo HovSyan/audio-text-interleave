@@ -4,10 +4,13 @@ import { Audio, AVPlaybackSource } from "expo-av";
 import { useEffect, useState } from "react";
 import Player from "@/components/Player";
 import { useRoute } from "@react-navigation/native";
+import { Asset } from "expo-asset";
+
+const MOCK_AUDIO_URI = () => Asset.loadAsync(require('../assets/mock/audio.mp3')).then(([asset]) => asset.uri);
 
 export type RouteParams = {
-  audioUri: string;
-  captionsUri: string;
+  audioUri?: string;
+  captionsUri?: string;
 };
 
 const PLAYER = new Audio.Sound();
@@ -46,8 +49,11 @@ export default function PlayerPage() {
   const [json, setJson] = useState<any>(null);
 
   useEffect(() => {
-    const { audioUri, captionsUri } = router.params as RouteParams;
-    Promise.all([loadAudio(audioUri), loadCaptionsJSON(captionsUri)]).then(
+    const params = router.params as RouteParams || {};
+    const audioLoad = Promise.resolve(params.audioUri || MOCK_AUDIO_URI()).then(loadAudio);
+    const captionsLoad = params.captionsUri ? loadCaptionsJSON(params.captionsUri) : require('../assets/mock/captions.json');
+    
+    Promise.all([audioLoad, captionsLoad]).then(
       ([status, json]) => {
         setJson(json);
         setReady(true);

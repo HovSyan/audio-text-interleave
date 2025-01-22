@@ -26,6 +26,10 @@ export default function Index() {
     }
   }
 
+  const tryMock = () => {
+    navigation.navigate('player')
+  }
+
   return (
     <View
       style={{
@@ -55,6 +59,12 @@ export default function Index() {
       <Button 
         onPress={onLetsRock}
         title="Lets rock"
+        color="#841584"
+      />
+      <Text>Or</Text>
+      <Button 
+        onPress={tryMock}
+        title="Test with mock"
         color="#841584"
       />
     </View>
