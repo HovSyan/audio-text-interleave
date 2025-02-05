@@ -1,67 +1,43 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { formatTime } from "@/utils/format-time";
+import { PlayerContext } from "@/contexts/player.context";
+import { CaptionsContext } from "@/contexts/captions.context";
 
-type Props = {
-  time: number;
-  total: number;
-  playing: boolean;
+export default function Controls() {
+  const player = useContext(PlayerContext)!;
+  const captions = useContext(CaptionsContext)!;
 
-  onPlay: () => any;
-  onPause: () => any;
-  onNext: () => any;
-  onPrev: () => any;
-};
+  const onPrev = () => {
+    const prev = captions.getPrev(player.status.time);
+    if (prev) {
+      player.setTime(prev.from);
+    }
+  }
 
-export default function Controls({
-  time,
-  total,
-  playing,
-  onPlay,
-  onPause,
-  onNext,
-  onPrev,
-}: Props) {
-  const trackerPercent = `${Math.floor((time / total) * 100)}%` as const;
+  const onNext = () => {
+    const next = captions.getNext();
+    if (next) {
+      player.setTime(next.from);
+    }
+  }
+
+  useEffect(() => captions.setHighlightedByTime(player.status.time), [player.status.time])
 
   return (
-    <View style={{ backgroundColor: "#ddd", paddingBottom: 30 }}>
-      <View style={{ minHeight: 50 }}>
-        <View style={{ height: 5, flexDirection: "row" }}>
-          <View
-            style={{ width: trackerPercent, backgroundColor: "orange" }}
-          ></View>
-          <View
-            style={{
-              width: 20,
-              height: 20,
-              borderRadius: 10,
-              backgroundColor: "orange",
-              alignSelf: "center",
-            }}
-          ></View>
+    <View style={styles.container}>
+      <View style={styles.timeAndTrackerContainer}>
+        <View style={styles.trackerContainer}>
+          <View style={[styles.trackerHead, { width: `${player.status.timePercent()}%` }]}></View>
+          <View style={styles.trackerTail}></View>
         </View>
-        <View
-          style={{
-            justifyContent: "space-between",
-            flexDirection: "row",
-            flex: 1,
-            paddingHorizontal: 24,
-            marginTop: 24,
-          }}
-        >
-          <Text>{formatTime(time)}</Text>
-          <Text>{formatTime(total)}</Text>
+        <View style={styles.timeWrapper}>
+          <Text>{formatTime(player.status.time)}</Text>
+          <Text>{formatTime(player.status.total)}</Text>
         </View>
       </View>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "center",
-          gap: 20,
-        }}
-      >
+      <View style={styles.actions}>
         <View>
           <AntDesign.Button
             onPress={onPrev}
@@ -71,11 +47,11 @@ export default function Controls({
           />
         </View>
         <AntDesign.Button
-          onPress={playing ? onPause : onPlay}
-          name={playing ? "pausecircle" : "play"}
+          onPress={player.togglePlayPause}
+          name={player.status.playing ? "pausecircle" : "play"}
           color="black"
           backgroundColor="transparent"
-          style={{ paddingHorizontal: 5 }}
+          style={styles.playPauseBtn}
         />
         <View>
           <AntDesign.Button
@@ -89,3 +65,30 @@ export default function Controls({
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { backgroundColor: "#ddd", paddingBottom: 30 },
+  timeAndTrackerContainer: { minHeight: 50 },
+  trackerContainer: { height: 5, flexDirection: "row" },
+  trackerHead: { backgroundColor: "orange" },
+  trackerTail: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: "orange",
+    alignSelf: "center",
+  },
+  timeWrapper: {
+    justifyContent: "space-between",
+    flexDirection: "row",
+    flex: 1,
+    paddingHorizontal: 24,
+    marginTop: 24,
+  },
+  actions: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 20,
+  },
+  playPauseBtn: { paddingHorizontal: 5 }
+})

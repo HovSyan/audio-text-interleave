@@ -1,4 +1,18 @@
-import { CaptionsJSON, ParsedCaptionsList } from "@/components/Player";
+export type CaptionsJSON = {
+  pause: number;
+  speakers: Array<{
+    name: string;
+    phrases: Array<{ words: string; time: number }>;
+  }>;
+};
+export type ParsedCaptionsList = Array<ParsedCaption>;
+export type ParsedCaption = {
+  type: "speaker";
+  from: number;
+  to: number;
+  speakerName: string;
+  words: string;
+};
 
 export function parseCaptionsJSON(json: CaptionsJSON): ParsedCaptionsList {
     const pause = json.pause;

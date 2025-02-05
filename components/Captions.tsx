@@ -1,39 +1,36 @@
-import React, { memo } from "react";
-import { ScrollView, Text, View } from "react-native";
-import { ParsedCaptionsList } from "./Player";
+import React, { useContext } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
 import CaptionItem from "./CaptionItem";
+import { CaptionsContext } from "@/contexts/captions.context";
 
-type Props = {
-  list: ParsedCaptionsList;
-  activeIndex: number | null;
-};
+export default function Captions() {
+  const captions = useContext(CaptionsContext)!;
 
-function Captions({ list, activeIndex }: Props) {
   return (
     <ScrollView
-      style={{
-        backgroundColor: "#bbb",
-        flex: 1,
-        padding: 10,
-      }}
-      contentContainerStyle={{
-        rowGap: 24,
-      }}
+      style={styles.scrollView}
+      contentContainerStyle={styles.scrollContentContainer}
     >
-      {list.map((c, i) => (
-        <View key={i}>
-          {c.type === "speaker" && (
-            <CaptionItem
-              words={c.words}
-              speaker={c.speakerName}
-              highlighted={i === activeIndex}
-              align={i % 2 ? "flex-start" : "flex-end"}
-            />
-          )}
-        </View>
+      {captions.list.map((c, i) => (
+        <CaptionItem
+          key={i}
+          words={c.words}
+          speaker={c.speakerName}
+          highlighted={i === captions.highlighted}
+          align={i % 2 ? "flex-start" : "flex-end"}
+        />
       ))}
     </ScrollView>
   );
 }
 
-export default memo(Captions);
+const styles = StyleSheet.create({
+  scrollView: {
+    backgroundColor: "#bbb",
+    flex: 1,
+    padding: 10,
+  },
+  scrollContentContainer: {
+    rowGap: 24,
+  },
+});

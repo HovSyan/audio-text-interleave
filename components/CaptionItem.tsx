@@ -1,5 +1,4 @@
-import React from "react";
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 type Props = {
     words: string;
@@ -9,8 +8,22 @@ type Props = {
 }
 
 export default function CaptionItem({ words, speaker, highlighted, align }: Props) {
-    return <View style={{ gap: 2, alignItems: align }}>
-        <Text style={{ color: highlighted ? 'yellow' : 'black', paddingInline: 10 }}>{speaker}</Text>
-        <Text style={{ color: highlighted ? 'yellow' : 'black', padding: 10, backgroundColor: 'lightblue', borderRadius: 10 }}>{words}</Text>
+    return <View style={[styles.box, { alignItems: align }]}>
+        <Text style={[styles.speaker, { color: highlighted ? 'yellow' : 'black' }]}>{speaker}</Text>
+        <Text style={[styles.words, { color: highlighted ? 'yellow' : 'black' }]}>{words}</Text>
     </View>
 }
+
+const styles = StyleSheet.create({
+    box: {
+        gap: 2,
+    },
+    speaker: {
+        paddingInline: 10
+    },
+    words: {
+        padding: 10,
+        borderRadius: 10,
+        backgroundColor: 'lightblue'
+    }
+})
