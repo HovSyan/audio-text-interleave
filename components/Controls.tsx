@@ -2,39 +2,41 @@ import React, { useContext, useEffect } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { formatTime } from "@/utils/format-time";
-import { PlayerContext } from "@/contexts/player.context";
+import { PlayerContext, PlayerStatusContext } from "@/contexts/player.context";
 import { CaptionsContext } from "@/contexts/captions.context";
+import Timeline from "./Timeline";
 
 export default function Controls() {
   const player = useContext(PlayerContext)!;
+  const { currentTime, duration, playing } = useContext(PlayerStatusContext)!;
   const captions = useContext(CaptionsContext)!;
 
   const onPrev = () => {
-    const prev = captions.getPrev(player.status.time);
+    const prev = captions.getPrev(currentTime);
     if (prev) {
-      player.setTime(prev.from);
+      player.seekTo(prev.from);
     }
-  }
+  };
 
   const onNext = () => {
     const next = captions.getNext();
     if (next) {
-      player.setTime(next.from);
+      player.seekTo(next.from);
     }
-  }
+  };
 
-  useEffect(() => captions.setHighlightedByTime(player.status.time), [player.status.time])
+  useEffect(
+    () => captions.setHighlightedByTime(currentTime),
+    [currentTime]
+  );
 
   return (
     <View style={styles.container}>
       <View style={styles.timeAndTrackerContainer}>
-        <View style={styles.trackerContainer}>
-          <View style={[styles.trackerHead, { width: `${player.status.timePercent()}%` }]}></View>
-          <View style={styles.trackerTail}></View>
-        </View>
+        <Timeline style={styles.slider} />
         <View style={styles.timeWrapper}>
-          <Text>{formatTime(player.status.time)}</Text>
-          <Text>{formatTime(player.status.total)}</Text>
+          <Text>{formatTime(currentTime)}</Text>
+          <Text>{formatTime(duration)}</Text>
         </View>
       </View>
       <View style={styles.actions}>
@@ -43,12 +45,12 @@ export default function Controls() {
             onPress={onPrev}
             name="stepbackward"
             color="black"
-            backgroundColor='transparent'
+            backgroundColor="transparent"
           />
         </View>
         <AntDesign.Button
-          onPress={player.togglePlayPause}
-          name={player.status.playing ? "pausecircle" : "play"}
+          onPress={() => playing ? player.pause() : player.play() }
+          name={playing ? "pausecircle" : "play"}
           color="black"
           backgroundColor="transparent"
           style={styles.playPauseBtn}
@@ -58,7 +60,7 @@ export default function Controls() {
             onPress={onNext}
             name="stepforward"
             color="black"
-            backgroundColor='transparent'
+            backgroundColor="transparent"
           />
         </View>
       </View>
@@ -69,15 +71,7 @@ export default function Controls() {
 const styles = StyleSheet.create({
   container: { backgroundColor: "#ddd", paddingBottom: 30 },
   timeAndTrackerContainer: { minHeight: 50 },
-  trackerContainer: { height: 5, flexDirection: "row" },
-  trackerHead: { backgroundColor: "orange" },
-  trackerTail: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: "orange",
-    alignSelf: "center",
-  },
+  slider: { width: '100%', marginTop: -10 },
   timeWrapper: {
     justifyContent: "space-between",
     flexDirection: "row",
@@ -90,5 +84,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 20,
   },
-  playPauseBtn: { paddingHorizontal: 5 }
-})
+  playPauseBtn: { paddingHorizontal: 5 },
+});
