@@ -23,21 +23,26 @@ export default function useCaptions(uri: string) {
       );
   }, []);
 
-  const getPrev = (currentTime: number) => {
-    if (!list[highlighted]) return null;
-    const delta = currentTime - list[highlighted].from;
-    if (0 <= delta && delta < 500) return list[highlighted - 1];
-    return list[highlighted];
+  return {
+    list,
+    highlighted,
+    error,
+    loading,
+    
+    getPrev: (currentTime: number) => {
+      if (!list[highlighted]) return null;
+      const delta = currentTime - list[highlighted].from;
+      if (0 <= delta && delta < 500) return list[highlighted - 1];
+      return list[highlighted];
+    },
+
+    getNext: () => {
+      if (highlighted >= list.length - 1) return null;
+      return list[highlighted + 1];
+    },
+
+    setHighlightedByTime: (t: number) => {
+      setHighlighted(list.findIndex((c) => c.from <= t && t < c.to));
+    },
   };
-
-  const getNext = () => {
-    if (highlighted >= list.length - 1) return null;
-    return list[highlighted + 1];
-  };
-
-  const setHighlightedByTime = (t: number) => {
-    setHighlighted(list.findIndex((c) => c.from <= t && t < c.to ));
-  }
-
-  return { list, highlighted, error, loading, getPrev, getNext, setHighlightedByTime };
 }

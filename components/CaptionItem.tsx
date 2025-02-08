@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 type Props = {
@@ -7,12 +8,14 @@ type Props = {
     align: 'flex-end' | 'flex-start'
 }
 
-export default function CaptionItem({ words, speaker, highlighted, align }: Props) {
+function CaptionItem({ words, speaker, highlighted, align }: Props) {
     return <View style={[styles.box, { alignItems: align }]}>
         <Text style={[styles.speaker, { color: highlighted ? 'yellow' : 'black' }]}>{speaker}</Text>
         <Text style={[styles.words, { color: highlighted ? 'yellow' : 'black' }]}>{words}</Text>
     </View>
 }
+
+export default memo(CaptionItem);
 
 const styles = StyleSheet.create({
     box: {

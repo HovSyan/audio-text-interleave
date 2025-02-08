@@ -6,7 +6,7 @@ import {
   useAudioPlayer,
   useAudioPlayerStatus,
 } from "expo-audio";
-import useExactTime from "@/hooks/PlayerExactTime.hook";
+import useExactTime from "@/hooks/ExactTime.hook";
 
 const AUDIO_LOAD_TIMEOUT = 5000;
 

@@ -3,37 +3,37 @@ import { View, StyleSheet, Text } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { formatTime } from "@/utils/format-time";
 import { PlayerContext, PlayerStatusContext } from "@/contexts/player.context";
-import { CaptionsContext } from "@/contexts/captions.context";
 import Timeline from "./Timeline";
+import { CaptionsContext } from "@/contexts/captions.context";
 
 export default function Controls() {
   const player = useContext(PlayerContext)!;
   const { currentTime, duration, playing } = useContext(PlayerStatusContext)!;
-  const captions = useContext(CaptionsContext)!;
+  const { getPrev, getNext, setHighlightedByTime } = useContext(CaptionsContext)!;
 
   const onPrev = () => {
-    const prev = captions.getPrev(currentTime);
+    const prev = getPrev(currentTime);
     if (prev) {
       player.seekTo(prev.from);
     }
   };
 
   const onNext = () => {
-    const next = captions.getNext();
+    const next = getNext();
     if (next) {
       player.seekTo(next.from);
     }
   };
 
   useEffect(
-    () => captions.setHighlightedByTime(currentTime),
+    () => setHighlightedByTime(currentTime),
     [currentTime]
   );
 
   return (
     <View style={styles.container}>
       <View style={styles.timeAndTrackerContainer}>
-        <Timeline style={styles.slider} />
+        <Timeline style={styles.slider} duration={duration} />
         <View style={styles.timeWrapper}>
           <Text>{formatTime(currentTime)}</Text>
           <Text>{formatTime(duration)}</Text>

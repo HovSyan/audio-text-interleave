@@ -15,12 +15,16 @@ export default function CaptionsProvider({ children, uri }: Props) {
   const captions = useCaptions(uri);
 
   if (captions.error) {
-    <Text>It's an error, couldn't load the captions</Text>
+    <Text>It's an error, couldn't load the captions</Text>;
   }
 
   if (captions.loading) {
-    return <Text>Loading...</Text>
+    return <Text>Loading...</Text>;
   }
 
-  return <CaptionsContext.Provider value={captions}>{children}</CaptionsContext.Provider>
+  return (
+    <CaptionsContext.Provider value={captions}>
+      {children}
+    </CaptionsContext.Provider>
+  );
 }

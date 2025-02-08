@@ -1,16 +1,13 @@
-import {
-  PlayerExactTimeContext,
-  PlayerStatusContext,
-} from "@/contexts/player.context";
+import { PlayerExactTimeContext } from "@/contexts/player.context";
 import Slider from "@react-native-community/slider";
-import { useContext } from "react";
+import { memo, useContext } from "react";
 
 type Props = {
   style: object;
+  duration: number;
 };
 
-export default function Timeline({ style }: Props) {
-  const { duration } = useContext(PlayerStatusContext)!;
+function Timeline({ style, duration }: Props) {
   const time = useContext(PlayerExactTimeContext);
 
   return (
@@ -22,3 +19,5 @@ export default function Timeline({ style }: Props) {
     />
   );
 }
+
+export default memo(Timeline);
